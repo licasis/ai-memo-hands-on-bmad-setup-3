@@ -1,78 +1,101 @@
 // app/notes/page.tsx
 // 노트 목록 페이지
-// 사용자의 모든 노트를 표시하고 새 노트 생성으로 이동할 수 있는 페이지
-// 관련 파일: lib/db/queries/notes.ts, app/notes/create/page.tsx
+// 사용자의 모든 노트를 표시하고 페이지네이션을 통해 탐색할 수 있는 페이지
+// 관련 파일: lib/db/queries/notes.ts, components/notes/note-list.tsx, components/notes/note-pagination.tsx
 
 import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import Link from 'next/link';
-import { getNotesByUserId } from '@/lib/db/queries/notes';
+import { getNotesByUserId, getNotesCountByUserId } from '@/lib/db/queries/notes';
 import { createClient } from '@/lib/supabase/server';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
+import { NoteList } from '@/components/notes/note-list';
+import { NotePagination } from '@/components/notes/note-pagination';
+import { NoteSort } from '@/components/notes/note-sort';
+import { EmptyStateEnhanced } from '@/components/notes/empty-state-enhanced';
 
-async function NotesList() {
+interface NotesPageProps {
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+    sort?: string;
+  }>;
+}
+
+async function NotesListWithPagination({ searchParams }: NotesPageProps) {
   // 임시로 인증을 우회하여 메모 기능 테스트
   const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
   
+  // searchParams를 await로 처리
+  const resolvedSearchParams = await searchParams;
+  
+  // URL 파라미터에서 페이지네이션 설정 추출
+  const page = parseInt(resolvedSearchParams.page || '1', 10);
+  const limit = parseInt(resolvedSearchParams.limit || '10', 10);
+  const sortParam = resolvedSearchParams.sort || 'updatedAt-desc';
+  
+  // 정렬 파라미터 파싱
+  const [orderBy, orderDirection] = sortParam.split('-') as [string, string];
+  
+  // 페이지네이션 계산
+  const offset = (page - 1) * limit;
+  
   try {
-    const notes = await getNotesByUserId(mockUserId, { limit: 20 });
+    // 노트 목록과 총 개수를 개별적으로 조회 (에러 핸들링을 위해)
+    let notes, totalCount;
+    
+    try {
+      notes = await getNotesByUserId(mockUserId, {
+        limit,
+        offset,
+        orderBy: orderBy as 'createdAt' | 'updatedAt' | 'title',
+        orderDirection: orderDirection as 'asc' | 'desc',
+      });
+    } catch (error) {
+      console.error('노트 조회 오류:', error);
+      notes = []; // 빈 배열로 초기화
+    }
+    
+    try {
+      totalCount = await getNotesCountByUserId(mockUserId);
+    } catch (error) {
+      console.error('노트 개수 조회 오류:', error);
+      totalCount = notes.length; // 조회된 노트 개수 사용
+    }
 
-    if (notes.length === 0) {
-      return (
-        <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">아직 노트가 없습니다</h3>
-          <p className="text-gray-600 mb-6">첫 번째 노트를 작성해보세요!</p>
-          <Link href="/notes/create">
-            <Button>새 노트 작성</Button>
-          </Link>
-        </div>
-      );
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // 노트가 없는 경우 빈 상태 표시
+    if (totalCount === 0) {
+      return <EmptyStateEnhanced />;
     }
 
     return (
-      <div className="space-y-4">
-        {notes.map((note) => (
-          <Card key={note.id} className="p-4 hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start">
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {note.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-2 line-clamp-3">
-                  {note.content}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {new Date(note.updatedAt).toLocaleDateString('ko-KR')}
-                </p>
-              </div>
-              <div className="ml-4">
-                <Link href={`/notes/${note.id}`}>
-                  <Button variant="outline" size="sm">
-                    보기
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <>
+        <NoteList notes={notes} />
+        <NotePagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={totalCount}
+          itemsPerPage={limit}
+        />
+      </>
     );
   } catch (error) {
     console.error('노트 로딩 오류:', error);
     return (
-      <div className="text-center py-12">
-        <h3 className="text-lg font-medium text-gray-900 mb-2">노트를 불러올 수 없습니다</h3>
-        <p className="text-gray-600 mb-6">데이터베이스 연결에 문제가 있습니다.</p>
-        <Link href="/notes/create">
-          <Button>새 노트 작성</Button>
-        </Link>
-      </div>
+      <NoteList 
+        notes={[]} 
+        error="데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요." 
+      />
     );
   }
 }
 
-export default function NotesPage() {
+export default async function NotesPage({ searchParams }: NotesPageProps) {
+  // searchParams를 await로 처리
+  const resolvedSearchParams = await searchParams;
+  
   return (
     <AuthenticatedLayout>
       <div className="max-w-7xl mx-auto">
@@ -83,13 +106,16 @@ export default function NotesPage() {
               <Button>새 노트 작성</Button>
             </Link>
           </div>
-          <p className="text-gray-600">
-            작성한 노트들을 확인하고 관리하세요.
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-gray-600">
+              작성한 노트들을 확인하고 관리하세요.
+            </p>
+            <NoteSort currentSort={resolvedSearchParams.sort as any} />
+          </div>
         </div>
 
-        <Suspense fallback={<div>노트를 불러오는 중...</div>}>
-          <NotesList />
+        <Suspense fallback={<NoteList notes={[]} isLoading={true} />}>
+          <NotesListWithPagination searchParams={searchParams} />
         </Suspense>
       </div>
     </AuthenticatedLayout>

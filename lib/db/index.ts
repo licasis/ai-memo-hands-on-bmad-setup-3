@@ -16,6 +16,9 @@ if (!connectionString) {
 // Postgres 클라이언트 생성
 const client = postgres(connectionString, {
   prepare: false, // Supabase와의 호환성을 위해 false로 설정
+  connect_timeout: 30, // 연결 타임아웃 30초
+  idle_timeout: 20, // 유휴 타임아웃 20초
+  max_lifetime: 60 * 30, // 최대 연결 시간 30분
 });
 
 // Drizzle 인스턴스 생성

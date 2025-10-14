@@ -2,7 +2,7 @@
 // 데이터베이스 스키마 정의
 // 노트 관리 시스템의 모든 테이블과 관계를 정의
 
-import { pgTable, text, timestamp, uuid, varchar, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uuid, varchar, jsonb, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // notes 테이블 정의
@@ -13,6 +13,8 @@ export const notes = pgTable('notes', {
   content: text('content').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  deletedAt: timestamp('deleted_at'), // Soft delete를 위한 삭제 시간
+  isDeleted: boolean('is_deleted').default(false), // 삭제 여부
 });
 
 // note_tags 테이블 정의
