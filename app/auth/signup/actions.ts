@@ -38,7 +38,7 @@ export async function signUpAction({
       }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Supabase Auth를 사용한 회원가입
     const { data, error } = await supabase.auth.signUp({

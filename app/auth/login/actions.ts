@@ -38,7 +38,7 @@ export async function signInAction({
       }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Supabase Auth를 사용한 로그인
     const { data, error } = await supabase.auth.signInWithPassword({

@@ -1,40 +1,52 @@
 // app/dashboard/page.tsx
 // 대시보드 페이지
 // 로그인한 사용자를 위한 메인 대시보드입니다
-// 관련 파일: components/auth/login-form.tsx, components/auth/signup-form.tsx
+// 관련 파일: components/dashboard/header.tsx, components/auth/logout-button.tsx
 
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import AuthenticatedLayout from '@/components/layout/authenticated-layout'
 
-export default async function DashboardPage() {
-  const supabase = createClient()
-  
-  // 사용자 인증 확인
-  const { data: { user }, error } = await supabase.auth.getUser()
-  
-  if (error || !user) {
-    redirect('/auth/login')
-  }
-
+export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                AI 메모장 대시보드
-              </h1>
-              <p className="text-lg text-gray-600 mb-2">
-                안녕하세요, {user.email}님!
-              </p>
-              <p className="text-gray-500">
-                메모 작성 기능이 곧 추가될 예정입니다.
-              </p>
+    <AuthenticatedLayout>
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              AI 메모장 대시보드
+            </h1>
+            <p className="text-gray-500 mb-8">
+              왼쪽 메뉴에서 원하는 기능을 선택하세요.
+            </p>
+            
+            {/* 빠른 액션 버튼들 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              <a
+                href="/notes/create"
+                className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+              >
+                <div className="text-blue-600 font-medium mb-1">새 노트 작성</div>
+                <div className="text-sm text-blue-500">아이디어를 빠르게 기록하세요</div>
+              </a>
+              
+              <a
+                href="/notes"
+                className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
+              >
+                <div className="text-green-600 font-medium mb-1">모든 노트 보기</div>
+                <div className="text-sm text-green-500">작성한 노트들을 확인하세요</div>
+              </a>
+              
+              <a
+                href="/notes/search"
+                className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+              >
+                <div className="text-purple-600 font-medium mb-1">노트 검색</div>
+                <div className="text-sm text-purple-500">원하는 내용을 찾아보세요</div>
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </AuthenticatedLayout>
   )
 }
