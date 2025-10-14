@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowLeft, Edit, Trash2, Calendar, Clock } from 'lucide-react';
 import { Note } from '@/lib/db/types';
 import { DeleteConfirmDialog } from './delete-confirm-dialog';
+import { AISummaryButton } from './ai-summary-button';
 
 interface NoteDetailProps {
   note: Note;
@@ -75,6 +76,11 @@ export function NoteDetail({ note }: NoteDetailProps) {
           </Button>
           
           <div className="flex items-center gap-2">
+            <AISummaryButton
+              noteId={note.id}
+              noteTitle={note.title}
+              noteContent={note.content}
+            />
             <Button
               variant="outline"
               onClick={handleEdit}

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getDeletedNotesByUserId, getDeletedNotesCountByUserId } from '@/lib/db/queries/notes';
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
 import { TrashList } from '@/components/trash/trash-list';
 import { TrashPagination } from '@/components/trash/trash-pagination';
@@ -22,8 +23,15 @@ interface TrashPageProps {
 }
 
 async function TrashListWithPagination({ searchParams }: TrashPageProps) {
-  // 임시로 인증을 우회하여 메모 기능 테스트
-  const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
+  // 실제 사용자 인증
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect('/auth/login');
+  }
+  
+  const userId = user.id;
 
   // URL 파라미터에서 페이지네이션 설정 추출
   const page = parseInt(searchParams.page || '1', 10);
@@ -37,13 +45,13 @@ async function TrashListWithPagination({ searchParams }: TrashPageProps) {
   try {
     // 삭제된 노트 목록과 총 개수를 병렬로 조회
     const [deletedNotes, totalCount] = await Promise.all([
-      getDeletedNotesByUserId(mockUserId, {
+      getDeletedNotesByUserId(userId, {
         limit,
         offset,
         orderBy: sort as 'createdAt' | 'updatedAt' | 'deletedAt',
         orderDirection: order as 'asc' | 'desc',
       }),
-      getDeletedNotesCountByUserId(mockUserId),
+      getDeletedNotesCountByUserId(userId),
     ]);
 
     const totalPages = Math.ceil(totalCount / limit);

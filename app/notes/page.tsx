@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getNotesByUserId, getNotesCountByUserId } from '@/lib/db/queries/notes';
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
 import { NoteList } from '@/components/notes/note-list';
 import { NotePagination } from '@/components/notes/note-pagination';
@@ -23,8 +24,15 @@ interface NotesPageProps {
 }
 
 async function NotesListWithPagination({ searchParams }: NotesPageProps) {
-  // 임시로 인증을 우회하여 메모 기능 테스트
-  const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
+  // 실제 사용자 인증
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect('/auth/login');
+  }
+  
+  const userId = user!.id;
   
   // searchParams를 await로 처리
   const resolvedSearchParams = await searchParams;
@@ -42,10 +50,10 @@ async function NotesListWithPagination({ searchParams }: NotesPageProps) {
   
   try {
     // 노트 목록과 총 개수를 개별적으로 조회 (에러 핸들링을 위해)
-    let notes, totalCount;
+    let notes: any[] = [], totalCount: number = 0;
     
     try {
-      notes = await getNotesByUserId(mockUserId, {
+      notes = await getNotesByUserId(userId, {
         limit,
         offset,
         orderBy: orderBy as 'createdAt' | 'updatedAt' | 'title',
@@ -57,7 +65,7 @@ async function NotesListWithPagination({ searchParams }: NotesPageProps) {
     }
     
     try {
-      totalCount = await getNotesCountByUserId(mockUserId);
+      totalCount = await getNotesCountByUserId(userId);
     } catch (error) {
       console.error('노트 개수 조회 오류:', error);
       totalCount = notes.length; // 조회된 노트 개수 사용

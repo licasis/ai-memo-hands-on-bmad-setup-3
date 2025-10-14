@@ -4,6 +4,8 @@
 // 관련 파일: components/notes/search-form.tsx, lib/db/queries/notes.ts
 
 import { Suspense } from 'react';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,8 +27,15 @@ interface SearchPageProps {
 }
 
 async function SearchResults({ searchParams }: SearchPageProps) {
-  // 임시로 인증을 우회하여 메모 기능 테스트
-  const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
+  // 실제 사용자 인증
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect('/auth/login');
+  }
+  
+  const userId = user.id;
   
   // searchParams를 await로 처리
   const resolvedSearchParams = await searchParams;
@@ -60,7 +69,7 @@ async function SearchResults({ searchParams }: SearchPageProps) {
     let notes, totalCount;
     
     try {
-      notes = await searchNotesByUserId(mockUserId, searchQuery, {
+      notes = await searchNotesByUserId(userId, searchQuery, {
         limit,
         offset,
         orderBy: orderBy as 'createdAt' | 'updatedAt' | 'title',
@@ -72,7 +81,7 @@ async function SearchResults({ searchParams }: SearchPageProps) {
     }
     
     try {
-      totalCount = await getSearchNotesCountByUserId(mockUserId, searchQuery);
+      totalCount = await getSearchNotesCountByUserId(userId, searchQuery);
     } catch (error) {
       console.error('검색 개수 오류:', error);
       totalCount = notes.length;

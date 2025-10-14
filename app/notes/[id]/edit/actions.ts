@@ -23,16 +23,16 @@ export async function updateNote(
   data: UpdateNoteData
 ): Promise<UpdateNoteResult> {
   try {
-    // 임시로 인증을 우회하여 메모 기능 테스트
-    const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
-
-    // 실제 Supabase 인증 사용 시
-    // const supabase = await createClient();
-    // const { data: { user }, error: authError } = await supabase.auth.getUser();
-    // if (authError || !user) {
-    //   return { success: false, error: '인증되지 않은 사용자입니다.' };
-    // }
-    // const userId = user.id;
+    // 실제 사용자 인증
+    const { createClient } = await import('@/lib/supabase/server');
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return { success: false, error: '인증되지 않은 사용자입니다.' };
+    }
+    
+    const userId = user.id;
 
     // 데이터 검증
     if (!data.title?.trim() || !data.content?.trim()) {
@@ -43,7 +43,7 @@ export async function updateNote(
     }
 
     // 노트 업데이트
-    const updatedNote = await dbUpdateNote(noteId, mockUserId, {
+    const updatedNote = await dbUpdateNote(noteId, userId, {
       title: data.title.trim(),
       content: data.content.trim(),
     });

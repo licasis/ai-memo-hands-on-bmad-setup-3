@@ -16,11 +16,13 @@ import { estimateTokens } from '@/lib/ai/token-utils';
 export async function POST(request: NextRequest) {
   let content: string | undefined;
   let maxLength: number = 200;
+  let temperature: number = 0.7;
   
   try {
     const requestData = await request.json();
     content = requestData.content;
     maxLength = requestData.maxLength || 200;
+    temperature = requestData.temperature || 0.7;
     
     if (!content || typeof content !== 'string') {
       return NextResponse.json(
@@ -52,16 +54,16 @@ export async function POST(request: NextRequest) {
 
 ${content}`;
     
-    // 재시도 및 타임아웃과 함께 API 호출
-    const result = await callGeminiWithTimeout(
-      () => callGeminiWithRetry(
-        () => generateText(prompt, {
-          maxTokens: Math.min(500, Math.ceil(maxLength / 4)),
-          temperature: 0.3,
-        })
-      ),
-      30000 // 30초 타임아웃
-    );
+        // 재시도 및 타임아웃과 함께 API 호출
+        const result = await callGeminiWithTimeout(
+          () => callGeminiWithRetry(
+            () => generateText(prompt, {
+              maxTokens: Math.min(500, Math.ceil(maxLength / 4)),
+              temperature: temperature,
+            })
+          ),
+          30000 // 30초 타임아웃
+        );
     
     // 응답 검증
     const validatedResult = validateSummarizeResponse(result);

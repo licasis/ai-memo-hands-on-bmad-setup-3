@@ -20,8 +20,19 @@ export interface CreateNoteResult {
 
 export async function createNote(data: CreateNoteData): Promise<CreateNoteResult> {
   try {
-    // 임시로 인증을 우회하여 메모 기능 테스트
-    const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
+    // 실제 사용자 인증
+    const { createClient } = await import('@/lib/supabase/server');
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error || !user) {
+      return {
+        success: false,
+        error: '로그인이 필요합니다.',
+      };
+    }
+    
+    const userId = user.id;
 
     // 노트 데이터 검증
     if (!data.title?.trim() || !data.content?.trim()) {
@@ -40,7 +51,7 @@ export async function createNote(data: CreateNoteData): Promise<CreateNoteResult
     const [note] = await db
       .insert(notes)
       .values({
-        userId: mockUserId,
+        userId: userId,
         title: data.title.trim(),
         content: data.content.trim(),
         createdAt: new Date(),

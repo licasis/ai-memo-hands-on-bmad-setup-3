@@ -13,20 +13,24 @@ interface AuthenticatedLayoutProps {
 }
 
 export default async function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
-  // 임시로 인증을 우회하여 메모 기능 테스트
-  const mockUser = {
-    id: 'test-user-123',
-    email: 'test@example.com'
-  };
+  const supabase = await createClient();
+  
+  // 현재 로그인한 사용자 정보 가져오기
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  // 사용자가 로그인하지 않았거나 오류가 발생한 경우 로그인 페이지로 리다이렉트
+  if (error || !user) {
+    redirect('/auth/login');
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* 사이드바 */}
-      <Sidebar userEmail={mockUser.email} />
+      <Sidebar userEmail={user.email!} />
       
       {/* 메인 콘텐츠 영역 */}
       <div className="flex-1 flex flex-col">
-        <DashboardHeader userEmail={mockUser.email} />
+        <DashboardHeader userEmail={user.email!} />
         
         <div className="flex-1 p-6">
           {children}

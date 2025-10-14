@@ -4,8 +4,9 @@
 // 관련 파일: lib/db/queries/notes.ts, components/notes/note-detail.tsx
 
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getNoteById } from '@/lib/db/queries/notes';
+import { createClient } from '@/lib/supabase/server';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
 import { NoteDetail } from '@/components/notes/note-detail';
 import { LoadingSkeleton } from '@/components/notes/loading-skeleton';
@@ -17,11 +18,18 @@ interface NoteDetailPageProps {
 }
 
 async function NoteDetailContent({ noteId }: { noteId: string }) {
-  // 임시로 인증을 우회하여 메모 기능 테스트
-  const mockUserId = '550e8400-e29b-41d4-a716-446655440000';
+  // 실제 사용자 인증
+  const supabase = await createClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  
+  if (error || !user) {
+    redirect('/auth/login');
+  }
+  
+  const userId = user.id;
   
   try {
-    const note = await getNoteById(noteId, mockUserId);
+    const note = await getNoteById(noteId, userId);
     
     if (!note) {
       notFound();
