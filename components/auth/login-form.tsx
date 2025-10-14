@@ -1,22 +1,22 @@
-// components/auth/signup-form.tsx
-// 회원가입 폼 컴포넌트
-// 이메일과 비밀번호 입력을 받아 회원가입을 처리합니다
-// 관련 파일: app/auth/signup/page.tsx, app/auth/signup/actions.ts
+// components/auth/login-form.tsx
+// 로그인 폼 컴포넌트
+// 이메일과 비밀번호 입력을 받아 로그인을 처리합니다
+// 관련 파일: app/auth/login/page.tsx, app/auth/login/actions.ts
 
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { signUpAction } from '@/app/auth/signup/actions'
+import { signInAction } from '@/app/auth/login/actions'
 
-export function SignupForm() {
+export function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
@@ -29,15 +29,9 @@ export function SignupForm() {
       return false
     }
 
-    // 비밀번호 길이 검사
-    if (password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.')
-      return false
-    }
-
-    // 비밀번호 확인
-    if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.')
+    // 비밀번호 입력 검사
+    if (!password.trim()) {
+      setError('비밀번호를 입력해주세요.')
       return false
     }
 
@@ -55,16 +49,16 @@ export function SignupForm() {
     setIsLoading(true)
 
     try {
-      const result = await signUpAction({ email, password })
+      const result = await signInAction({ email, password })
       
       if (result.success) {
-        // 회원가입 성공 시 대시보드로 리다이렉트
+        // 로그인 성공 시 대시보드로 리다이렉트
         router.push('/dashboard')
       } else {
-        setError(result.error || '회원가입 중 오류가 발생했습니다.')
+        setError(result.error || '로그인 중 오류가 발생했습니다.')
       }
     } catch (err) {
-      setError('회원가입 중 오류가 발생했습니다.')
+      setError('로그인 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)
     }
@@ -73,9 +67,9 @@ export function SignupForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>회원가입</CardTitle>
+        <CardTitle>로그인</CardTitle>
         <CardDescription>
-          이메일과 비밀번호로 계정을 생성하세요
+          이메일과 비밀번호로 로그인하세요
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -99,19 +93,7 @@ export function SignupForm() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="8자 이상 입력하세요"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">비밀번호 확인</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="비밀번호를 다시 입력하세요"
+              placeholder="비밀번호를 입력하세요"
               required
             />
           </div>
@@ -127,8 +109,17 @@ export function SignupForm() {
             className="w-full" 
             disabled={isLoading}
           >
-            {isLoading ? '처리 중...' : '회원가입'}
+            {isLoading ? '로그인 중...' : '로그인'}
           </Button>
+
+          <div className="text-center">
+            <Link 
+              href="/auth/forgot-password" 
+              className="text-sm text-blue-600 hover:text-blue-500"
+            >
+              비밀번호를 잊으셨나요?
+            </Link>
+          </div>
         </form>
       </CardContent>
     </Card>
