@@ -11,9 +11,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { RichTextEditor } from '@/components/ui/rich-text-editor';
-import { ArrowLeft, Save, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Save, AlertCircle, Sparkles, FileText, CheckCircle } from 'lucide-react';
 import { AutoSaveIndicator } from './auto-save-indicator';
 import { updateNote } from '@/app/notes/[id]/edit/actions';
+// import { useMCP } from '@/lib/hooks/use-mcp';
+// import { getMCPConfig } from '@/lib/mcp/config';
 
 interface NoteEditorProps {
   note: {
@@ -33,6 +35,30 @@ export function NoteEditor({ note }: NoteEditorProps) {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  // MCP 기능은 추후 서버 API로 구현 예정
+  // 현재는 UI만 표시하고 실제 기능은 비활성화
+  const isConnected = false;
+  const isConnecting = false;
+
+  // MCP AI 도움 함수들 (추후 서버 API로 구현 예정)
+  const enhanceContentWithAI = useCallback(async () => {
+    if (!content.trim()) return;
+    // TODO: 서버 API로 AI 내용 개선 기능 구현
+    alert('AI 내용 개선 기능은 추후 지원 예정입니다.');
+  }, [content]);
+
+  const generateSummaryWithAI = useCallback(async () => {
+    if (!content.trim()) return;
+    // TODO: 서버 API로 AI 요약 생성 기능 구현
+    alert('AI 요약 생성 기능은 추후 지원 예정입니다.');
+  }, [content]);
+
+  const checkGrammarWithAI = useCallback(async () => {
+    if (!content.trim()) return;
+    // TODO: 서버 API로 AI 맞춤법 검사 기능 구현
+    alert('AI 맞춤법 검사 기능은 추후 지원 예정입니다.');
+  }, [content]);
 
   // 변경사항 감지
   useEffect(() => {
@@ -115,6 +141,59 @@ export function NoteEditor({ note }: NoteEditorProps) {
         </Button>
         
         <div className="flex items-center gap-3">
+          {/* AI 도움 버튼들 */}
+          <div className="flex items-center gap-2 mr-4">
+            {/* MCP 연결 상태 표시 */}
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <div className={`w-2 h-2 rounded-full ${
+                isConnected ? 'bg-green-500' :
+                isConnecting ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+              }`} />
+              <span>
+                {isConnected ? 'AI 연결됨' :
+                 isConnecting ? '연결 중...' : 'AI 연결 안됨'}
+              </span>
+            </div>
+
+            {isConnected && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={enhanceContentWithAI}
+                  disabled={!content.trim()}
+                  className="inline-flex items-center gap-1"
+                  title="AI로 내용 개선"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  개선
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={generateSummaryWithAI}
+                  disabled={!content.trim()}
+                  className="inline-flex items-center gap-1"
+                  title="AI로 요약 생성"
+                >
+                  <FileText className="w-3 h-3" />
+                  요약
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={checkGrammarWithAI}
+                  disabled={!content.trim()}
+                  className="inline-flex items-center gap-1"
+                  title="AI로 맞춤법 검사"
+                >
+                  <CheckCircle className="w-3 h-3" />
+                  검사
+                </Button>
+              </>
+            )}
+          </div>
+
           <AutoSaveIndicator
             isSaving={isSaving}
             lastSaved={lastSaved}

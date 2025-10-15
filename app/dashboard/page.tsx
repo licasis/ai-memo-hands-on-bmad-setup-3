@@ -6,6 +6,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import QRCode from 'react-qr-code'
+import { MCPStatus } from '@/components/ui/mcp-status'
 import AuthenticatedLayout from '@/components/layout/authenticated-layout'
 
 export default function DashboardPage() {
@@ -44,7 +45,12 @@ export default function DashboardPage() {
                 <p className="mt-2 text-sm text-gray-600">하늘 이미지</p>
               </div>
             </div>
-            
+
+            {/* MCP 상태 표시 */}
+            <div className="mb-8 flex justify-center">
+              <MCPStatus />
+            </div>
+
             {/* 빠른 액션 버튼들 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               <div className="flex flex-col items-center">
