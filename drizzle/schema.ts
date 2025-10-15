@@ -11,6 +11,7 @@ export const notes = pgTable('notes', {
   userId: uuid('user_id').notNull(), // Supabase Auth의 사용자 ID
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content').notNull(),
+  isChecked: boolean('is_checked').default(false), // 체크박스 상태
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'), // Soft delete를 위한 삭제 시간

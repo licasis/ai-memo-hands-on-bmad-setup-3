@@ -15,6 +15,13 @@
       "when": 1760421594839,
       "tag": "0001_ambiguous_richard_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760489603112,
+      "tag": "0002_silent_the_professor",
+      "breakpoints": true
     }
   ]
 }

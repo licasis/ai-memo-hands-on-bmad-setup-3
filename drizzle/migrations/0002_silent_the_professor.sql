@@ -1,0 +1,1 @@
+ALTER TABLE "notes" ADD COLUMN "is_checked" boolean DEFAULT false;
