@@ -52,14 +52,16 @@ export async function createNote(data: CreateNoteRequest): Promise<CreateNoteRes
     const db = drizzle(client, { schema: { notes } });
 
     // 노트 생성
+    const now = new Date();
     const [note] = await db
       .insert(notes)
       .values({
         userId: userId,
         title: data.title.trim(),
         content: data.content.trim(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        lastViewedAt: now, // 새 노트 생성 시 마지막 조회 시간을 현재 시간으로 설정
+        createdAt: now,
+        updatedAt: now,
       })
       .returning();
 
