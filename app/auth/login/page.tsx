@@ -5,6 +5,7 @@
 
 import { LoginForm } from '@/components/auth/login-form'
 import Link from 'next/link'
+import QRCode from 'react-qr-code'
 
 export default function LoginPage() {
   return (
@@ -20,12 +21,31 @@ export default function LoginPage() {
         </div>
         
         <LoginForm />
-        
+
+        {/* 대시보드 QR 코드 */}
+        <div className="text-center">
+          <p className="text-sm text-gray-600 mb-4">
+            로그인 후 바로 대시보드로 이동
+          </p>
+          <div className="flex justify-center">
+            <div className="p-3 bg-white rounded-lg border border-gray-200 shadow-sm">
+              <QRCode
+                value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/dashboard`}
+                size={100}
+                level="M"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            QR 코드 스캔으로 대시보드 바로가기
+          </p>
+        </div>
+
         <div className="text-center">
           <p className="text-sm text-gray-600">
             계정이 없으신가요?{' '}
-            <Link 
-              href="/auth/signup" 
+            <Link
+              href="/auth/signup"
               className="font-medium text-blue-600 hover:text-blue-500"
             >
               회원가입
