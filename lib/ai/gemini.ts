@@ -97,3 +97,58 @@ export async function* generateTextStream(prompt: string, options?: {
     };
   }
 }
+
+/**
+ * 노트 내용에서 태그를 생성합니다.
+ */
+export async function generateTags(content: string, options?: {
+  maxTags?: number;
+  language?: 'ko' | 'en' | 'both';
+  temperature?: number;
+}) {
+  const { maxTags = 6, language = 'both', temperature = 0.7 } = options || {};
+  
+  // 언어별 프롬프트 설정
+  const languageInstruction = language === 'ko' 
+    ? '한국어로만 태그를 생성해주세요.'
+    : language === 'en'
+    ? '영어로만 태그를 생성해주세요.'
+    : '한국어와 영어를 섞어서 태그를 생성해주세요.';
+
+  const prompt = `
+다음 노트 내용을 분석하여 관련성 높은 태그를 생성해주세요.
+
+노트 내용:
+${content}
+
+요구사항:
+- 정확히 ${maxTags}개의 태그를 생성해주세요
+- ${languageInstruction}
+- 각 태그는 1-3단어로 간결하게 작성해주세요
+- 태그는 콤마(,)로 구분해주세요
+- 불필요한 기호나 특수문자는 사용하지 마세요
+- 태그는 노트의 핵심 주제와 키워드를 반영해야 합니다
+
+태그 목록:
+`;
+
+  try {
+    const result = await generateText(prompt, {
+      temperature,
+      maxTokens: 200, // 태그 생성에는 적은 토큰으로 충분
+    });
+
+    // 응답에서 태그 추출 및 정리
+    const tagsText = result.text.trim();
+    const tags = tagsText
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0)
+      .slice(0, maxTags); // 최대 개수 제한
+
+    return tags;
+  } catch (error) {
+    console.error('태그 생성 오류:', error);
+    throw new Error('태그 생성에 실패했습니다.');
+  }
+}

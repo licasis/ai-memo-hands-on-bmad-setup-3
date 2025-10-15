@@ -1,125 +1,70 @@
 // lib/ai/types.ts
-// Gemini API 응답 및 AI 관련 타입 정의
-// API 응답 구조와 데이터 모델을 정의합니다
-// 관련 파일: lib/ai/gemini.ts, app/api/ai/summarize/route.ts, app/api/ai/tags/route.ts
+// AI 관련 타입 정의
+// AI 처리 상태, 설정, 응답 등의 타입을 정의하는 파일
+// 관련 파일: components/notes/ai-summary-button.tsx, components/notes/ai-tag-button.tsx
 
-/**
- * Gemini API 사용량 메타데이터
- */
-export interface UsageMetadata {
-  promptTokenCount?: number;
-  candidatesTokenCount?: number;
-  totalTokenCount?: number;
-}
+export type AIProcessStatus = 'idle' | 'loading' | 'success' | 'error';
 
-/**
- * Gemini API 후보 응답
- */
-export interface Candidate {
-  content: {
-    parts: Array<{
-      text: string;
-    }>;
-  };
-  finishReason?: 'STOP' | 'MAX_TOKENS' | 'SAFETY' | 'RECITATION' | 'OTHER';
-  safetyRatings?: Array<{
-    category: string;
-    probability: string;
-  }>;
-}
-
-/**
- * Gemini API 응답
- */
-export interface GeminiResponse {
-  candidates?: Candidate[];
-  usageMetadata?: UsageMetadata;
-  text: string;
-  usage: UsageMetadata;
-  finishReason?: string;
-}
-
-/**
- * 요약 API 요청
- */
-export interface SummarizeRequest {
-  content: string;
-  maxLength?: number;
-}
-
-/**
- * 요약 API 응답
- */
-export interface SummarizeResponse {
-  summary: string;
-  usage: UsageMetadata;
-  finishReason?: string;
-}
-
-/**
- * 태그 API 요청
- */
-export interface TagsRequest {
-  content: string;
-  maxTags?: number;
-}
-
-/**
- * 태그 API 응답
- */
-export interface TagsResponse {
-  tags: string[];
-  usage: UsageMetadata;
-  finishReason?: string;
-}
-
-/**
- * AI 처리 상태
- */
-export enum AIProcessingStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-}
-
-/**
- * AI 처리 결과
- */
-export interface AIProcessingResult {
-  status: AIProcessingStatus;
-  summary?: string;
-  tags?: string[];
+export interface AIStatusState {
+  status: AIProcessStatus;
+  message: string;
+  progress?: number;
   error?: string;
-  usage?: UsageMetadata;
-  processedAt?: Date;
+  timestamp?: number;
 }
 
-/**
- * 토큰 사용량 정보
- */
-export interface TokenUsageInfo {
-  estimatedTokens: number;
-  maxTokens: number;
-  isExceeded: boolean;
-  remainingTokens: number;
-  usagePercentage: number;
+export interface AISummaryResponse {
+  summary: string;
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 }
 
-/**
- * 재시도 설정
- */
-export interface RetryConfig {
-  maxAttempts: number;
-  baseDelay: number;
-  maxDelay: number;
-  backoffMultiplier: number;
+export interface AITagResponse {
+  tags: string[];
+  count: number;
+  language: 'ko' | 'en' | 'both';
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
 }
 
-/**
- * 타임아웃 설정
- */
-export interface TimeoutConfig {
-  timeoutMs: number;
-  timeoutMessage: string;
+export interface AISettings {
+  maxLength?: number;
+  maxTags?: number;
+  language?: 'ko' | 'en' | 'both';
+  temperature?: number;
+  autoApply?: boolean;
 }
+
+export interface AIError {
+  code: string;
+  message: string;
+  details?: string;
+  retryable?: boolean;
+}
+
+export const AI_STATUS_MESSAGES = {
+  idle: 'AI 기능을 사용할 수 있습니다',
+  loading: 'AI가 처리 중입니다...',
+  success: 'AI 처리가 완료되었습니다',
+  error: 'AI 처리 중 오류가 발생했습니다',
+} as const;
+
+export const AI_STATUS_COLORS = {
+  idle: 'text-gray-500',
+  loading: 'text-blue-500',
+  success: 'text-green-500',
+  error: 'text-red-500',
+} as const;
+
+export const AI_STATUS_BG_COLORS = {
+  idle: 'bg-gray-50',
+  loading: 'bg-blue-50',
+  success: 'bg-green-50',
+  error: 'bg-red-50',
+} as const;
