@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,24 @@ export function NoteDetail({ note }: NoteDetailProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isChecked, setIsChecked] = useState(note.isChecked || false);
   const [isToggling, setIsToggling] = useState(false);
+
+  // 노트 조회 시 마지막으로 본 시간 업데이트
+  useEffect(() => {
+    const updateLastViewed = async () => {
+      try {
+        await fetch(`/api/notes/${note.id}/view`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } catch (error) {
+        console.error('마지막으로 본 시간 업데이트 실패:', error);
+      }
+    };
+
+    updateLastViewed();
+  }, [note.id]);
 
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('ko-KR', {
@@ -176,6 +194,12 @@ export function NoteDetail({ note }: NoteDetailProps) {
                 <Clock className="w-4 h-4" />
                 <span>수정일: {formatDate(note.updatedAt)}</span>
               </div>
+              {note.lastViewedAt && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-blue-600" />
+                  <span className="text-blue-600">마지막 조회: {formatDate(note.lastViewedAt)}</span>
+                </div>
+              )}
             </div>
           </CardHeader>
           

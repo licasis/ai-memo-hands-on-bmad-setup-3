@@ -1,0 +1,1 @@
+ALTER TABLE "notes" ADD COLUMN "last_viewed_at" timestamp;

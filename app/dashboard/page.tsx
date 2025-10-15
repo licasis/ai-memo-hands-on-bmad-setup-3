@@ -18,6 +18,15 @@ export default function DashboardPage() {
               왼쪽 메뉴에서 원하는 기능을 선택하세요.
             </p>
             
+            {/* 대시보드 이미지 */}
+            <div className="mb-8 flex justify-center">
+              <img 
+                src="/abc.png" 
+                alt="Dashboard Image" 
+                className="max-w-md w-full h-auto rounded-lg shadow-md border border-gray-200"
+              />
+            </div>
+            
             {/* 빠른 액션 버튼들 */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
               <a

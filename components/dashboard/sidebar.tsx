@@ -17,7 +17,8 @@ import {
   User,
   Search,
   Tag,
-  BarChart3
+  BarChart3,
+  Clock
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -36,6 +37,12 @@ const navigationItems = [
     href: '/notes',
     icon: FileText,
     description: '작성한 모든 노트 보기'
+  },
+  {
+    name: '최근 조회',
+    href: '/notes/recent',
+    icon: Clock,
+    description: '최근 조회한 노트 보기'
   },
   {
     name: '새 노트 작성',

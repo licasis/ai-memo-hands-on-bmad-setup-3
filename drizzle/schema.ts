@@ -12,6 +12,7 @@ export const notes = pgTable('notes', {
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content').notNull(),
   isChecked: boolean('is_checked').default(false), // 체크박스 상태
+  lastViewedAt: timestamp('last_viewed_at'), // 마지막으로 본 시간
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   deletedAt: timestamp('deleted_at'), // Soft delete를 위한 삭제 시간
