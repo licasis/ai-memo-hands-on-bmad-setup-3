@@ -25,18 +25,6 @@ export function EmptyStateEnhanced({
 }: EmptyStateEnhancedProps) {
   const [onboardingStep, setOnboardingStep] = useState(0);
 
-  const handleOnboardingNext = () => {
-    if (onboardingStep < 2) {
-      setOnboardingStep(prev => prev + 1);
-    } else {
-      onOnboardingComplete?.();
-    }
-  };
-
-  const handleOnboardingSkip = () => {
-    onOnboardingComplete?.();
-  };
-
   return (
     <div className={`flex items-center justify-center py-12 px-4 ${className}`}>
       <Card className="max-w-md w-full text-center">

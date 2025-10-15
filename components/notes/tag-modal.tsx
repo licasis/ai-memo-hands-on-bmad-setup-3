@@ -5,12 +5,12 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { RefreshCw, X, Check, Plus, Trash2 } from 'lucide-react';
+import { RefreshCw, X, Check, Plus } from 'lucide-react';
 
 interface TagModalProps {
   isOpen: boolean;
@@ -38,7 +38,7 @@ export function TagModal({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // 태그가 변경될 때마다 편집 가능한 태그 목록 업데이트
-  useState(() => {
+  useEffect(() => {
     setEditableTags(tags);
     setSelectedTags(tags);
   }, [tags]);
@@ -48,18 +48,6 @@ export function TagModal({
       prev.includes(tag) 
         ? prev.filter(t => t !== tag)
         : [...prev, tag]
-    );
-  };
-
-  const handleTagEdit = (oldTag: string, newTag: string) => {
-    if (!newTag.trim()) return;
-    
-    setEditableTags(prev => 
-      prev.map(tag => tag === oldTag ? newTag.trim() : tag)
-    );
-    
-    setSelectedTags(prev => 
-      prev.map(tag => tag === oldTag ? newTag.trim() : tag)
     );
   };
 

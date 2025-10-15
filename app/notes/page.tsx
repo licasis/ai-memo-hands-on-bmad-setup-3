@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { getNotesByUserId, getNotesCountByUserId } from '@/lib/db/queries/notes';
 import { createClient } from '@/lib/supabase/server';
+import type { Note } from '@/lib/db/types';
 import { redirect } from 'next/navigation';
 import AuthenticatedLayout from '@/components/layout/authenticated-layout';
 import { NoteList } from '@/components/notes/note-list';
@@ -50,15 +51,15 @@ async function NotesListWithPagination({ searchParams }: NotesPageProps) {
   
   try {
     // 노트 목록과 총 개수를 개별적으로 조회 (에러 핸들링을 위해)
-    let notes: any[] = [], totalCount: number = 0;
+    let notes: Note[] = [], totalCount: number = 0;
     
     try {
-      notes = await getNotesByUserId(userId, {
+      notes = (await getNotesByUserId(userId, {
         limit,
         offset,
         orderBy: orderBy as 'createdAt' | 'updatedAt' | 'title',
         orderDirection: orderDirection as 'asc' | 'desc',
-      });
+      })) as Note[];
     } catch (error) {
       console.error('노트 조회 오류:', error);
       notes = []; // 빈 배열로 초기화
@@ -118,7 +119,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
             <p className="text-gray-600">
               작성한 노트들을 확인하고 관리하세요.
             </p>
-            <NoteSort currentSort={resolvedSearchParams.sort as any} />
+            <NoteSort currentSort={resolvedSearchParams.sort as 'updatedAt-desc' | 'updatedAt-asc' | 'createdAt-desc' | 'createdAt-asc' | 'title-asc' | 'title-desc' | undefined} />
           </div>
         </div>
 

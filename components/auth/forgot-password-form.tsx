@@ -48,7 +48,7 @@ export function ForgotPasswordForm() {
       } else {
         setError(result.error || '비밀번호 재설정 요청 중 오류가 발생했습니다.')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('비밀번호 재설정 요청 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)

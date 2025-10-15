@@ -2,9 +2,9 @@
 // 태그 CRUD 쿼리 함수
 // 노트 태그 생성, 조회, 삭제 기능
 
-import { eq, and, inArray } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { db } from '../index';
-import { noteTags, notes, type NoteTag, type NewNoteTag } from '../../../drizzle/schema';
+import { noteTags, notes } from '../../../drizzle/schema';
 
 // 노트에 태그 추가
 export async function addTagToNote(noteId: string, userId: string, tag: string) {

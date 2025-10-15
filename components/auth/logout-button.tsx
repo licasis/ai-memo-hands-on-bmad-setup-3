@@ -38,7 +38,7 @@ export function LogoutButton({
       } else {
         setError(result.error || '로그아웃 중 오류가 발생했습니다.')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('로그아웃 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)

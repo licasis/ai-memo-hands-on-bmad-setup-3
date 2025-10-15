@@ -6,8 +6,6 @@
 'use server';
 
 import { restoreNote, permanentDeleteNote } from '@/lib/db/queries/notes';
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 
 export interface RestoreNoteResult {
   success: boolean;

@@ -139,7 +139,7 @@ ${content}
     });
 
     // 응답에서 태그 추출 및 정리
-    const tagsText = result.text.trim();
+    const tagsText = (result.text || '').trim();
     const tags = tagsText
       .split(',')
       .map(tag => tag.trim())

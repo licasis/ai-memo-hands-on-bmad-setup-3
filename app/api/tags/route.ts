@@ -8,9 +8,9 @@ import { createClient } from '@/lib/supabase/server';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { noteTags, notes } from '@/drizzle/schema';
-import { eq, and, desc, inArray } from 'drizzle-orm';
+import { eq, and, inArray } from 'drizzle-orm';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // 사용자 인증 확인
     const supabase = await createClient();

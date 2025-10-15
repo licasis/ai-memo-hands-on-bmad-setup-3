@@ -14,8 +14,8 @@ import { Search, Filter } from 'lucide-react';
 import { NoteList } from '@/components/notes/note-list';
 import { NotePagination } from '@/components/notes/note-pagination';
 import { NoteSort } from '@/components/notes/note-sort';
-import { EmptyStateEnhanced } from '@/components/notes/empty-state-enhanced';
 import { searchNotesByUserId, getSearchNotesCountByUserId } from '@/lib/db/queries/notes';
+import type { Note } from '@/lib/db/types';
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -66,15 +66,15 @@ async function SearchResults({ searchParams }: SearchPageProps) {
   
   try {
     // 검색 결과와 총 개수를 개별적으로 조회
-    let notes, totalCount;
+    let notes: Note[], totalCount: number;
     
     try {
-      notes = await searchNotesByUserId(userId, searchQuery, {
+      notes = (await searchNotesByUserId(userId, searchQuery, {
         limit,
         offset,
         orderBy: orderBy as 'createdAt' | 'updatedAt' | 'title',
         orderDirection: orderDirection as 'asc' | 'desc',
-      });
+      })) as Note[];
     } catch (error) {
       console.error('검색 오류:', error);
       notes = [];
@@ -96,7 +96,7 @@ async function SearchResults({ searchParams }: SearchPageProps) {
           <Search className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">검색 결과가 없습니다</h3>
           <p className="text-gray-600">
-            "{searchQuery}"에 대한 검색 결과를 찾을 수 없습니다. 다른 키워드로 시도해보세요.
+            &quot;{searchQuery}&quot;에 대한 검색 결과를 찾을 수 없습니다. 다른 키워드로 시도해보세요.
           </p>
         </div>
       );
@@ -106,7 +106,7 @@ async function SearchResults({ searchParams }: SearchPageProps) {
       <>
         <div className="mb-4">
           <p className="text-gray-600">
-            "{searchQuery}"에 대한 검색 결과 {totalCount}개를 찾았습니다.
+            &quot;{searchQuery}&quot;에 대한 검색 결과 {totalCount}개를 찾았습니다.
           </p>
         </div>
         <NoteList notes={notes} />
@@ -173,7 +173,7 @@ export default async function NotesSearchPage({ searchParams }: SearchPageProps)
         {/* 정렬 옵션 */}
         {searchQuery && (
           <div className="mb-4 flex justify-end">
-            <NoteSort currentSort={resolvedSearchParams.sort as any} />
+            <NoteSort currentSort={resolvedSearchParams.sort as 'updatedAt-desc' | 'updatedAt-asc' | 'createdAt-desc' | 'createdAt-asc' | 'title-asc' | 'title-desc' | undefined} />
           </div>
         )}
 

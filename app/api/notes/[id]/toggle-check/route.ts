@@ -11,7 +11,7 @@ import { eq, and } from 'drizzle-orm';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
@@ -24,7 +24,7 @@ export async function PATCH(
       );
     }
 
-    const { id: noteId } = params;
+    const { id: noteId } = await params;
     const body = await request.json();
     const { isChecked } = body;
 

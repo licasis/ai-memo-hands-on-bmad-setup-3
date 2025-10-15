@@ -73,7 +73,7 @@ export function PermanentDeleteDialog({ note, open, onOpenChange }: PermanentDel
             노트 영구 삭제
           </DialogTitle>
           <DialogDescription>
-            <strong>"{note.title}"</strong> 노트를 영구적으로 삭제하시겠습니까?
+            <strong>&quot;{note.title}&quot;</strong> 노트를 영구적으로 삭제하시겠습니까?
             <br />
             <br />
             <strong className="text-red-600">이 작업은 되돌릴 수 없습니다.</strong>
@@ -84,7 +84,7 @@ export function PermanentDeleteDialog({ note, open, onOpenChange }: PermanentDel
         
         <div className="py-4">
           <label htmlFor="confirm-text" className="block text-sm font-medium text-gray-700 mb-2">
-            확인을 위해 <strong>"영구삭제"</strong>를 입력하세요:
+            확인을 위해 <strong>&quot;영구삭제&quot;</strong>를 입력하세요:
           </label>
           <input
             id="confirm-text"

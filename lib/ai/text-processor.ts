@@ -76,7 +76,7 @@ ${text}`;
     temperature: 0.3,
   });
   
-  return result.text;
+  return result.text || '';
 }
 
 /**
@@ -117,7 +117,7 @@ ${text}
     temperature: 0.5,
   });
   
-  return result.text
+  return (result.text || '')
     .split(',')
     .map(tag => tag.trim())
     .filter(tag => tag.length > 0)

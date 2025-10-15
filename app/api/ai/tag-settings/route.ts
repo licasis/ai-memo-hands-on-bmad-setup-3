@@ -5,10 +5,16 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-// 임시로 메모리에 설정 저장 (실제로는 데이터베이스에 저장해야 함)
-let userSettings: Record<string, any> = {};
+interface TagSettings {
+  maxTags: number;
+  language: 'ko' | 'en' | 'both';
+  autoApply: boolean;
+}
 
-export async function GET(request: NextRequest) {
+// 임시로 메모리에 설정 저장 (실제로는 데이터베이스에 저장해야 함)
+let userSettings: TagSettings | null = null;
+
+export async function GET(_request: NextRequest) {
   try {
     // 임시로 기본 설정 반환
     const defaultSettings = {

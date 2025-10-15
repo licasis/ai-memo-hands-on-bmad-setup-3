@@ -25,7 +25,7 @@ interface TagSettings {
   autoApply: boolean;
 }
 
-export function AITagButton({ noteId, noteTitle, noteContent }: AITagButtonProps) {
+export function AITagButton({ noteId: _noteId, noteTitle, noteContent }: AITagButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [tags, setTags] = useState<string[]>([]);
@@ -163,7 +163,7 @@ export function AITagButton({ noteId, noteTitle, noteContent }: AITagButtonProps
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           tags={tags}
-          error={status.status === 'error' ? status.error : null}
+          error={status.status === 'error' ? status.error || null : null}
           noteTitle={noteTitle}
           onRegenerate={handleRegenerate}
           onApplyTags={handleApplyTags}

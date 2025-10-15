@@ -58,7 +58,7 @@ export function RestoreConfirmDialog({ note, open, onOpenChange }: RestoreConfir
         <DialogHeader>
           <DialogTitle>노트 복구</DialogTitle>
           <DialogDescription>
-            <strong>"{note.title}"</strong> 노트를 복구하시겠습니까?
+            <strong>&quot;{note.title}&quot;</strong> 노트를 복구하시겠습니까?
             <br />
             복구된 노트는 노트 목록에서 다시 확인할 수 있습니다.
           </DialogDescription>

@@ -26,7 +26,7 @@ export async function resetPasswordAction({
       }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Supabase Auth를 사용한 비밀번호 재설정
     const { error } = await supabase.auth.updateUser({

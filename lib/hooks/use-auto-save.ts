@@ -6,7 +6,7 @@
 import { useEffect, useState, useCallback } from 'react';
 
 interface UseAutoSaveOptions {
-  saveFunction: (data: any) => Promise<{ success: boolean; error?: string }>;
+  saveFunction: (data: unknown) => Promise<{ success: boolean; error?: string }>;
   delay?: number;
   enabled?: boolean;
 }

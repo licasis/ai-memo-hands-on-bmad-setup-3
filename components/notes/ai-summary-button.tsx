@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, Settings } from 'lucide-react';
 import { SummaryModal } from './summary-modal';
 import { SummarySettings } from './summary-settings';
-import { AIStatusIndicator, AIStatusState } from '@/lib/ai/types';
+import { AIStatusState } from '@/lib/ai/types';
 import { AIStatusIndicator as StatusIndicator } from '@/components/ui/ai-status-indicator';
 
 interface AISummaryButtonProps {
@@ -26,7 +26,7 @@ interface SummarySettings {
   autoGenerate: boolean;
 }
 
-export function AISummaryButton({ noteId, noteTitle, noteContent }: AISummaryButtonProps) {
+export function AISummaryButton({ noteId: _noteId, noteTitle, noteContent }: AISummaryButtonProps) {
   const [showModal, setShowModal] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
@@ -159,7 +159,7 @@ export function AISummaryButton({ noteId, noteTitle, noteContent }: AISummaryBut
           isOpen={showModal}
           onClose={() => setShowModal(false)}
           summary={summary}
-          error={status.status === 'error' ? status.error : null}
+          error={status.status === 'error' ? status.error || null : null}
           noteTitle={noteTitle}
           onRegenerate={handleRegenerate}
           isRegenerating={status.status === 'loading'}

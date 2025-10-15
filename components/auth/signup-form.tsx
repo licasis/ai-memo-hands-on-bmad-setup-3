@@ -63,7 +63,7 @@ export function SignupForm() {
       } else {
         setError(result.error || '회원가입 중 오류가 발생했습니다.')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('회원가입 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)

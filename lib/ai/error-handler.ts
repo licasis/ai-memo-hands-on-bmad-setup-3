@@ -41,7 +41,7 @@ export function analyzeError(error: unknown): AIError {
   }
   
   const errorMessage = error instanceof Error ? error.message : String(error);
-  const errorCode = (error as any)?.code;
+  const errorCode = typeof error === 'object' && error !== null && 'code' in error ? (error as { code: string }).code : undefined;
   
   // 인증 에러
   if (errorMessage.includes('API key') || errorMessage.includes('authentication') || errorCode === 'UNAUTHENTICATED') {
@@ -126,7 +126,7 @@ export function analyzeError(error: unknown): AIError {
 /**
  * 에러를 로깅합니다.
  */
-export function logError(error: AIError, context?: Record<string, any>): void {
+export function logError(error: AIError, context?: Record<string, unknown>): void {
   const logData = {
     type: error.type,
     message: error.message,

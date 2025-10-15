@@ -27,7 +27,7 @@ export async function forgotPasswordAction({
       }
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // Supabase Auth를 사용한 비밀번호 재설정 이메일 발송
     const { error } = await supabase.auth.resetPasswordForEmail(email, {

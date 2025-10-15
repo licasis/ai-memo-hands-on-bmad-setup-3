@@ -71,10 +71,10 @@ ${content}
     
   } catch (error) {
     const aiError = analyzeError(error);
-    logError(aiError, { content: content?.substring(0, 100), maxTags });
-    
-    // 폴백 태그 생성
-    const fallbackTags = createFallbackTags(content, maxTags);
+    logError(aiError, {});
+
+    // 폴백 태그 생성 (content가 없으므로 빈 문자열 사용)
+    const fallbackTags = createFallbackTags('', 5);
     
     return NextResponse.json({
       tags: fallbackTags,

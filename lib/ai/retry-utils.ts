@@ -75,7 +75,7 @@ export async function withRetry<T>(
  */
 function isRetryableError(error: Error, retryableErrors: string[]): boolean {
   const errorMessage = error.message.toLowerCase();
-  const errorCode = (error as any).code;
+  const errorCode = error instanceof Error && 'code' in error ? (error as { code: string }).code : undefined;
   
   return retryableErrors.some(retryableError => 
     errorMessage.includes(retryableError.toLowerCase()) ||

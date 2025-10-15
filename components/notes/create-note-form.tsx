@@ -46,8 +46,6 @@ export default function CreateNoteForm() {
     },
   });
 
-  const watchedContent = watch('content');
-
   // 리치 텍스트 에디터 변경 핸들러
   const handleContentChange = (value: string) => {
     setContent(value);

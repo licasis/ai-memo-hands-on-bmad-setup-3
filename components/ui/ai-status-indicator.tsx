@@ -36,10 +36,6 @@ export function AIStatusIndicator({
     return AI_STATUS_MESSAGES[currentStatus];
   };
 
-  const getStatusColor = () => {
-    return AI_STATUS_COLORS[currentStatus];
-  };
-
   const getStatusBgColor = () => {
     return AI_STATUS_BG_COLORS[currentStatus];
   };

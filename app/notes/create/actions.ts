@@ -5,7 +5,6 @@
 
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { notes } from '@/drizzle/schema';

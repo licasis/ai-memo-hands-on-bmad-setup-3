@@ -4,22 +4,16 @@
 // 관련 파일: app/notes/[id]/actions.ts, lib/db/queries/notes.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteNoteAction } from '@/app/notes/[id]/actions';
-
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
+import { softDeleteNoteAction } from '@/app/notes/[id]/actions';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: RouteParams
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     
-    const result = await deleteNoteAction(id);
+    const result = await softDeleteNoteAction(id);
     
     if (result.success) {
       return NextResponse.json({ success: true });

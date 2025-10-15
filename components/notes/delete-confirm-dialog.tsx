@@ -53,7 +53,7 @@ export function DeleteConfirmDialog({
         
         <div className="py-4">
           <p className="text-sm text-gray-600">
-            <strong>"{noteTitle}"</strong> 노트를 삭제하시겠습니까?
+            <strong>&quot;{noteTitle}&quot;</strong> 노트를 삭제하시겠습니까?
           </p>
           <p className="text-sm text-gray-500 mt-2">
             삭제된 노트는 복구할 수 없습니다.

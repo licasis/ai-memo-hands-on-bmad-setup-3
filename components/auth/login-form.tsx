@@ -57,7 +57,7 @@ export function LoginForm() {
       } else {
         setError(result.error || '로그인 중 오류가 발생했습니다.')
       }
-    } catch (err) {
+    } catch (_err) {
       setError('로그인 중 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)

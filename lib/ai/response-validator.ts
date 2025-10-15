@@ -3,36 +3,38 @@
 // API 응답의 유효성을 검사하고 파싱합니다
 // 관련 파일: lib/ai/types.ts, lib/ai/gemini.ts
 
-import { GeminiResponse, SummarizeResponse, TagsResponse } from './types';
+import { GeminiResponse, SummarizeResponse, TagsResponse, GeminiCandidate } from './types';
 
 /**
  * Gemini API 응답을 검증합니다.
  */
-export function validateGeminiResponse(response: any): GeminiResponse {
+export function validateGeminiResponse(response: unknown): GeminiResponse {
   if (!response || typeof response !== 'object') {
     throw new Error('Invalid response: response must be an object');
   }
-  
-  if (!response.text || typeof response.text !== 'string') {
+
+  const responseObj = response as Record<string, unknown>;
+
+  if (!responseObj.text || typeof responseObj.text !== 'string') {
     throw new Error('Invalid response: text field is required and must be a string');
   }
-  
-  if (response.usage && typeof response.usage !== 'object') {
+
+  if (responseObj.usage && typeof responseObj.usage !== 'object') {
     throw new Error('Invalid response: usage must be an object');
   }
-  
+
   return {
-    text: response.text.trim(),
-    usage: response.usage || {},
-    finishReason: response.finishReason,
-    candidates: response.candidates,
+    text: responseObj.text.trim(),
+    usage: (responseObj.usage as Record<string, unknown>) || {},
+    finishReason: responseObj.finishReason as string | undefined,
+    candidates: (responseObj.candidates as GeminiCandidate[]) || [],
   };
 }
 
 /**
  * 요약 응답을 검증하고 파싱합니다.
  */
-export function validateSummarizeResponse(response: any): SummarizeResponse {
+export function validateSummarizeResponse(response: unknown): SummarizeResponse {
   const validatedResponse = validateGeminiResponse(response);
   
   if (!validatedResponse.text || validatedResponse.text.length === 0) {
@@ -49,7 +51,7 @@ export function validateSummarizeResponse(response: any): SummarizeResponse {
 /**
  * 태그 응답을 검증하고 파싱합니다.
  */
-export function validateTagsResponse(response: any): TagsResponse {
+export function validateTagsResponse(response: unknown): TagsResponse {
   const validatedResponse = validateGeminiResponse(response);
   
   // 태그 파싱 및 검증

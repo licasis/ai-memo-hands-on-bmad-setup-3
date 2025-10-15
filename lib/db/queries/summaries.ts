@@ -4,7 +4,7 @@
 
 import { eq, and, desc } from 'drizzle-orm';
 import { db } from '../index';
-import { summaries, notes, type Summary, type NewSummary } from '../../../drizzle/schema';
+import { summaries, notes, type NewSummary } from '../../../drizzle/schema';
 
 // 노트에 요약 추가
 export async function createSummary(noteId: string, userId: string, data: Omit<NewSummary, 'id' | 'noteId' | 'createdAt'>) {

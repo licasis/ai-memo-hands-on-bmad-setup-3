@@ -12,20 +12,16 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import { Highlight } from '@tiptap/extension-highlight';
 import { cn } from '@/lib/utils';
 import { Button } from './button';
-import { 
-  Bold, 
-  Italic, 
-  Underline, 
-  Strikethrough, 
-  List, 
-  ListOrdered, 
-  Quote, 
-  Code, 
+import {
+  Bold,
+  Italic,
+  Strikethrough,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
   Palette,
   Highlighter,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
   Undo,
   Redo
 } from 'lucide-react';
@@ -186,30 +182,6 @@ export function RichTextEditor({
           <Quote className="w-4 h-4" />
         </Button>
 
-        <div className="w-px h-6 bg-gray-300 mx-1" />
-
-        {/* 정렬 */}
-        <Button
-          variant={editor.isActive({ textAlign: 'left' }) ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        >
-          <AlignLeft className="w-4 h-4" />
-        </Button>
-        <Button
-          variant={editor.isActive({ textAlign: 'center' }) ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        >
-          <AlignCenter className="w-4 h-4" />
-        </Button>
-        <Button
-          variant={editor.isActive({ textAlign: 'right' }) ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        >
-          <AlignRight className="w-4 h-4" />
-        </Button>
 
         <div className="w-px h-6 bg-gray-300 mx-1" />
 

@@ -6,7 +6,6 @@
 'use server';
 
 import { updateNote as dbUpdateNote } from '@/lib/db/queries/notes';
-import { createClient } from '@/lib/supabase/server';
 
 export interface UpdateNoteData {
   title: string;

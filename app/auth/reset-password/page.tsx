@@ -8,8 +8,8 @@ import { redirect } from 'next/navigation'
 import { ResetPasswordForm } from '@/components/auth/reset-password-form'
 
 export default async function ResetPasswordPage() {
-  const supabase = createClient()
-  
+  const supabase = await createClient()
+
   // 사용자 인증 확인 (비밀번호 재설정 링크를 통한 접근)
   const { data: { user }, error } = await supabase.auth.getUser()
   
