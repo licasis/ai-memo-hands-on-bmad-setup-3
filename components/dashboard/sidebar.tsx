@@ -114,7 +114,7 @@ export default function Sidebar({ userEmail }: SidebarProps) {
       </div>
 
       {/* 현재 페이지 QR 코드 */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-3 border-b border-gray-200">
         <div className="text-center">
           <p className="text-xs text-gray-500 mb-2">현재 페이지 공유</p>
           <div className="flex justify-center">
@@ -122,12 +122,16 @@ export default function Sidebar({ userEmail }: SidebarProps) {
               <div className="p-2 bg-white rounded border border-gray-200">
                 <QRCode
                   value={currentUrl}
-                  size={80}
+                  size={60}
                   level="M"
+                  className="w-full max-w-[60px] h-auto"
                 />
               </div>
             )}
           </div>
+          <p className="text-xs text-gray-400 mt-1 hidden sm:block">
+            QR 스캔으로 공유
+          </p>
         </div>
       </div>
 

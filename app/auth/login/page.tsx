@@ -43,8 +43,9 @@ export default function LoginPage() {
               {dashboardUrl && (
                 <QRCode
                   value={dashboardUrl}
-                  size={100}
+                  size={90}
                   level="M"
+                  className="w-full max-w-[90px] h-auto"
                 />
               )}
             </div>

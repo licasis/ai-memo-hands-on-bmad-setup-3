@@ -22,14 +22,14 @@ export default function DashboardPage() {
             </p>
             
             {/* 대시보드 이미지들 */}
-            <div className="mb-8 flex justify-center gap-6 flex-wrap">
+            <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
               <div className="text-center">
                 <Image
                   src="/abc.png"
                   alt="기존 이미지"
                   width={300}
                   height={225}
-                  className="w-full h-auto rounded-lg shadow-md border border-gray-200"
+                  className="w-full max-w-sm h-auto rounded-lg shadow-md border border-gray-200 mx-auto"
                 />
                 <p className="mt-2 text-sm text-gray-600">기존 이미지</p>
               </div>
@@ -39,7 +39,7 @@ export default function DashboardPage() {
                   alt="하늘 이미지"
                   width={300}
                   height={225}
-                  className="w-full h-auto rounded-lg shadow-md border border-gray-200"
+                  className="w-full max-w-sm h-auto rounded-lg shadow-md border border-gray-200 mx-auto"
                 />
                 <p className="mt-2 text-sm text-gray-600">하늘 이미지</p>
               </div>
@@ -58,8 +58,9 @@ export default function DashboardPage() {
                 <div className="mt-3 p-2 bg-white rounded border border-gray-200">
                   <QRCode
                     value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes/create`}
-                    size={80}
+                    size={70}
                     level="M"
+                    className="w-full max-w-[70px] h-auto"
                   />
                 </div>
               </div>
@@ -75,8 +76,9 @@ export default function DashboardPage() {
                 <div className="mt-3 p-2 bg-white rounded border border-gray-200">
                   <QRCode
                     value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes`}
-                    size={80}
+                    size={70}
                     level="M"
+                    className="w-full max-w-[70px] h-auto"
                   />
                 </div>
               </div>
@@ -92,8 +94,9 @@ export default function DashboardPage() {
                 <div className="mt-3 p-2 bg-white rounded border border-gray-200">
                   <QRCode
                     value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes/search`}
-                    size={80}
+                    size={70}
                     level="M"
+                    className="w-full max-w-[70px] h-auto"
                   />
                 </div>
               </div>
