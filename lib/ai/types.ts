@@ -68,3 +68,59 @@ export const AI_STATUS_BG_COLORS = {
   success: 'bg-green-50',
   error: 'bg-red-50',
 } as const;
+
+// Gemini API 응답 타입
+export interface GeminiUsage {
+  promptTokenCount?: number;
+  candidatesTokenCount?: number;
+  totalTokenCount?: number;
+}
+
+export interface GeminiCandidate {
+  finishReason?: string;
+  content?: {
+    parts?: Array<{
+      text?: string;
+    }>;
+  };
+}
+
+export interface GeminiResponse {
+  text: string;
+  usage?: GeminiUsage;
+  finishReason?: string;
+  candidates?: GeminiCandidate[];
+}
+
+export interface SummarizeResponse {
+  summary: string;
+  usage?: GeminiUsage;
+  finishReason?: string;
+}
+
+export interface TagsResponse {
+  tags: string[];
+  usage?: GeminiUsage;
+  finishReason?: string;
+}
+
+// AI 처리 상태 enum
+export enum AIProcessingStatus {
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  PENDING = 'pending',
+}
+
+// AI 처리 결과 인터페이스
+export interface AIProcessingResult {
+  status: AIProcessingStatus;
+  summary?: string;
+  tags?: string[];
+  error?: string;
+  processedAt?: Date;
+  usage?: {
+    promptTokens: number;
+    completionTokens: number;
+    totalTokens: number;
+  };
+}
