@@ -20,15 +20,28 @@ export default function DashboardPage() {
               왼쪽 메뉴에서 원하는 기능을 선택하세요.
             </p>
             
-            {/* 대시보드 이미지 */}
-            <div className="mb-8 flex justify-center">
-              <Image
-                src="/abc.png"
-                alt="Dashboard Image"
-                width={400}
-                height={300}
-                className="max-w-md w-full h-auto rounded-lg shadow-md border border-gray-200"
-              />
+            {/* 대시보드 이미지들 */}
+            <div className="mb-8 flex justify-center gap-6 flex-wrap">
+              <div className="text-center">
+                <Image
+                  src="/abc.png"
+                  alt="기존 이미지"
+                  width={300}
+                  height={225}
+                  className="w-full h-auto rounded-lg shadow-md border border-gray-200"
+                />
+                <p className="mt-2 text-sm text-gray-600">기존 이미지</p>
+              </div>
+              <div className="text-center">
+                <Image
+                  src="/sky.png"
+                  alt="하늘 이미지"
+                  width={300}
+                  height={225}
+                  className="w-full h-auto rounded-lg shadow-md border border-gray-200"
+                />
+                <p className="mt-2 text-sm text-gray-600">하늘 이미지</p>
+              </div>
             </div>
             
             {/* 빠른 액션 버튼들 */}
