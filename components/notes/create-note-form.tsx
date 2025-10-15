@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { createNote } from '@/app/notes/create/actions';
 
 // 폼 유효성 검사 스키마
@@ -27,6 +28,7 @@ type CreateNoteFormData = z.infer<typeof createNoteSchema>;
 export default function CreateNoteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [content, setContent] = useState('');
   const router = useRouter();
 
   const {
@@ -34,9 +36,23 @@ export default function CreateNoteForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm<CreateNoteFormData>({
     resolver: zodResolver(createNoteSchema),
+    defaultValues: {
+      title: '',
+      content: '',
+    },
   });
+
+  const watchedContent = watch('content');
+
+  // 리치 텍스트 에디터 변경 핸들러
+  const handleContentChange = (value: string) => {
+    setContent(value);
+    setValue('content', value);
+  };
 
   const onSubmit = async (data: CreateNoteFormData) => {
     setIsSubmitting(true);
@@ -47,6 +63,7 @@ export default function CreateNoteForm() {
       
       if (result.success) {
         reset();
+        setContent('');
         router.push('/notes');
       } else {
         setError(result.error || '노트 생성에 실패했습니다.');
@@ -77,13 +94,13 @@ export default function CreateNoteForm() {
 
         <div className="space-y-2">
           <Label htmlFor="content">본문 *</Label>
-          <textarea
-            id="content"
-            {...register('content')}
-            placeholder="노트 내용을 입력하세요"
+          <RichTextEditor
+            value={content}
+            onChange={handleContentChange}
+            placeholder="노트 내용을 입력하세요. 다양한 서식을 적용할 수 있습니다."
             disabled={isSubmitting}
-            rows={10}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            height={300}
+            className="w-full"
           />
           {errors.content && (
             <p className="text-sm text-red-600">{errors.content.message}</p>

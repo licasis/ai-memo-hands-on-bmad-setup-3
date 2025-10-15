@@ -8,9 +8,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { ArrowLeft, Save, Check, AlertCircle } from 'lucide-react';
 import { AutoSaveIndicator } from './auto-save-indicator';
 import { updateNote } from '@/app/notes/[id]/edit/actions';
@@ -152,11 +152,12 @@ export function NoteEditor({ note }: NoteEditorProps) {
           />
         </CardHeader>
         <CardContent>
-          <Textarea
+          <RichTextEditor
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="노트 내용을 입력하세요..."
-            className="min-h-[400px] border-none shadow-none px-0 focus-visible:ring-0 resize-none"
+            onChange={setContent}
+            placeholder="노트 내용을 입력하세요. 다양한 서식을 적용할 수 있습니다."
+            height={400}
+            className="border-none"
           />
         </CardContent>
       </Card>

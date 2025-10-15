@@ -9,7 +9,11 @@ import { createClient } from '@/lib/supabase/server';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import { notes } from '@/drizzle/schema';
-import type { CreateNoteData } from '@/lib/db/types';
+// 클라이언트에서 전달받는 데이터 타입
+interface CreateNoteRequest {
+  title: string;
+  content: string;
+}
 import { redirect } from 'next/navigation';
 
 export interface CreateNoteResult {
@@ -18,7 +22,7 @@ export interface CreateNoteResult {
   noteId?: string;
 }
 
-export async function createNote(data: CreateNoteData): Promise<CreateNoteResult> {
+export async function createNote(data: CreateNoteRequest): Promise<CreateNoteResult> {
   try {
     // 실제 사용자 인증
     const { createClient } = await import('@/lib/supabase/server');
@@ -72,7 +76,7 @@ export async function createNote(data: CreateNoteData): Promise<CreateNoteResult
   }
 }
 
-export async function createNoteAndRedirect(data: CreateNoteData) {
+export async function createNoteAndRedirect(data: CreateNoteRequest) {
   const result = await createNote(data);
   
   if (result.success) {
