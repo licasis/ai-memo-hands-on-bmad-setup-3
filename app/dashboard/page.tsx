@@ -5,6 +5,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import QRCode from 'react-qr-code'
 import AuthenticatedLayout from '@/components/layout/authenticated-layout'
 
 export default function DashboardPage() {
@@ -45,30 +46,57 @@ export default function DashboardPage() {
             </div>
             
             {/* 빠른 액션 버튼들 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-              <Link
-                href="/notes/create"
-                className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
-              >
-                <div className="text-blue-600 font-medium mb-1">새 노트 작성</div>
-                <div className="text-sm text-blue-500">아이디어를 빠르게 기록하세요</div>
-              </Link>
-              
-              <Link
-                href="/notes"
-                className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
-              >
-                <div className="text-green-600 font-medium mb-1">모든 노트 보기</div>
-                <div className="text-sm text-green-500">작성한 노트들을 확인하세요</div>
-              </Link>
-              
-              <Link
-                href="/notes/search"
-                className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
-              >
-                <div className="text-purple-600 font-medium mb-1">노트 검색</div>
-                <div className="text-sm text-purple-500">원하는 내용을 찾아보세요</div>
-              </Link>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="flex flex-col items-center">
+                <Link
+                  href="/notes/create"
+                  className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors w-full text-center"
+                >
+                  <div className="text-blue-600 font-medium mb-1">새 노트 작성</div>
+                  <div className="text-sm text-blue-500">아이디어를 빠르게 기록하세요</div>
+                </Link>
+                <div className="mt-3 p-2 bg-white rounded border border-gray-200">
+                  <QRCode
+                    value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes/create`}
+                    size={80}
+                    level="M"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <Link
+                  href="/notes"
+                  className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors w-full text-center"
+                >
+                  <div className="text-green-600 font-medium mb-1">모든 노트 보기</div>
+                  <div className="text-sm text-green-500">작성한 노트들을 확인하세요</div>
+                </Link>
+                <div className="mt-3 p-2 bg-white rounded border border-gray-200">
+                  <QRCode
+                    value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes`}
+                    size={80}
+                    level="M"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <Link
+                  href="/notes/search"
+                  className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors w-full text-center"
+                >
+                  <div className="text-purple-600 font-medium mb-1">노트 검색</div>
+                  <div className="text-sm text-purple-500">원하는 내용을 찾아보세요</div>
+                </Link>
+                <div className="mt-3 p-2 bg-white rounded border border-gray-200">
+                  <QRCode
+                    value={`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/notes/search`}
+                    size={80}
+                    level="M"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

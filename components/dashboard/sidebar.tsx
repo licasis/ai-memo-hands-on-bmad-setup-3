@@ -7,12 +7,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { 
-  Home, 
-  FileText, 
-  Plus, 
-  Settings, 
+import QRCode from 'react-qr-code';
+import {
+  Home,
+  FileText,
+  Plus,
+  Settings,
   LogOut,
   User,
   Search,
@@ -84,6 +86,15 @@ const navigationItems = [
 
 export default function Sidebar({ userEmail }: SidebarProps) {
   const pathname = usePathname();
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  // 클라이언트 사이드에서 현재 URL 가져오기
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+      setCurrentUrl(`${baseUrl}${pathname}`);
+    }
+  }, [pathname]);
 
   return (
     <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-full">
@@ -98,6 +109,24 @@ export default function Sidebar({ userEmail }: SidebarProps) {
               {userEmail}
             </p>
             <p className="text-xs text-gray-500">온라인</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 현재 페이지 QR 코드 */}
+      <div className="p-4 border-b border-gray-200">
+        <div className="text-center">
+          <p className="text-xs text-gray-500 mb-2">현재 페이지 공유</p>
+          <div className="flex justify-center">
+            {currentUrl && (
+              <div className="p-2 bg-white rounded border border-gray-200">
+                <QRCode
+                  value={currentUrl}
+                  size={80}
+                  level="M"
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
