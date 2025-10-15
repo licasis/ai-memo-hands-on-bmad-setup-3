@@ -109,7 +109,12 @@ export function NoteCard({ note, showActions = true }: NoteCardProps) {
         />
         <div className="flex justify-between items-center text-xs text-gray-500">
           <span>작성: {formatDate(note.createdAt)}</span>
-          <span>수정: {formatDate(note.updatedAt)}</span>
+          <div className="flex flex-col items-end">
+            <span>수정: {formatDate(note.updatedAt)}</span>
+            {note.lastViewedAt && (
+              <span className="text-blue-600">마지막 조회: {formatDate(note.lastViewedAt)}</span>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
