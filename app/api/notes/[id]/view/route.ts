@@ -10,7 +10,7 @@ import { eq } from 'drizzle-orm';
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -19,9 +19,10 @@ export async function PATCH(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id: noteId } = params;
-
   try {
+    const { id: noteId } = await params;
+    console.log('Updating view time for note:', noteId, 'user:', userData.user.id);
+    
     // 노트가 존재하고 사용자가 소유자인지 확인
     const [note] = await db
       .select()
@@ -36,7 +37,7 @@ export async function PATCH(
     if (note.userId !== userData.user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
-
+    
     // lastViewedAt을 현재 시간으로 업데이트
     const [updatedNote] = await db
       .update(notes)
@@ -47,6 +48,7 @@ export async function PATCH(
       .where(eq(notes.id, noteId))
       .returning();
 
+    console.log('Updated note:', updatedNote);
     return NextResponse.json(updatedNote);
   } catch (error) {
     console.error('Error updating note view time:', error);

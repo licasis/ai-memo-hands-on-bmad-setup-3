@@ -360,3 +360,71 @@ export async function getSearchNotesCountByUserId(userId: string, searchQuery: s
     return 2; // 더미 검색 결과 2개
   }
 }
+
+// 최근 조회한 노트를 시간대별로 그룹화하여 조회
+export async function getRecentNotesByUserId(userId: string) {
+  try {
+    console.log('getRecentNotesByUserId 호출:', { userId });
+    
+    // lastViewedAt이 null이 아닌 노트들을 조회 (최신순)
+    const recentNotes = await db
+      .select()
+      .from(notes)
+      .where(and(
+        eq(notes.userId, userId),
+        eq(notes.isDeleted, false),
+        not(isNull(notes.lastViewedAt))
+      ))
+      .orderBy(desc(notes.lastViewedAt));
+    
+    console.log('최근 조회한 노트 조회 결과:', recentNotes.length, '개');
+    
+    // 현재 시간 기준으로 그룹화
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    const groupedNotes = {
+      today: [] as Note[],
+      thisWeek: [] as Note[],
+      thisMonth: [] as Note[],
+      older: [] as Note[]
+    };
+    
+    recentNotes.forEach(note => {
+      if (!note.lastViewedAt) return;
+      
+      const lastViewed = new Date(note.lastViewedAt);
+      
+      if (lastViewed >= oneDayAgo) {
+        groupedNotes.today.push(note);
+      } else if (lastViewed >= oneWeekAgo) {
+        groupedNotes.thisWeek.push(note);
+      } else if (lastViewed >= oneMonthAgo) {
+        groupedNotes.thisMonth.push(note);
+      } else {
+        groupedNotes.older.push(note);
+      }
+    });
+    
+    console.log('그룹화 결과:', {
+      today: groupedNotes.today.length,
+      thisWeek: groupedNotes.thisWeek.length,
+      thisMonth: groupedNotes.thisMonth.length,
+      older: groupedNotes.older.length
+    });
+    
+    return groupedNotes;
+  } catch (error) {
+    console.error('getRecentNotesByUserId 오류:', error);
+    
+    // 에러 시 빈 그룹 반환
+    return {
+      today: [],
+      thisWeek: [],
+      thisMonth: [],
+      older: []
+    };
+  }
+}
