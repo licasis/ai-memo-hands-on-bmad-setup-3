@@ -65,15 +65,23 @@ MCP_LOG_LEVEL=info
 
 ### 기본 MCP 서버들
 
-1. **note-enhancer**: 노트 내용 개선
-2. **tag-suggester**: 태그 추천
-3. **grammar-checker**: 맞춤법 검사
-4. **search-enhancer**: 검색 쿼리 개선
-5. **web-search**: 외부 정보 검색
+1. **greeting-calculator**: 인사와 계산기 서버 (프로젝트 내장)
+   - 인사 도구: 다국어로 인사 메시지 생성
+   - 계산기 도구: 사칙연산 수행
+2. **note-enhancer**: 노트 내용 개선
+3. **tag-suggester**: 태그 추천
+4. **grammar-checker**: 맞춤법 검사
+5. **search-enhancer**: 검색 쿼리 개선
+6. **web-search**: 외부 정보 검색
 
 ## 🚀 사용 방법
 
-### 1. 노트 편집기에서 AI 도움
+### 1. 로그인 시 AI 인사
+- **MCP 기반 인사**: 로그인 성공 시 사용자 이름을 활용한 한국어 인사 생성
+- **실시간 표시**: 로그인 폼에서 3초간 인사 메시지 표시 후 대시보드 이동
+- **개인화**: 이메일 주소에서 추출한 사용자 이름 사용
+
+### 2. 노트 편집기에서 AI 도움
 
 ```tsx
 // 노트 에디터에 AI 버튼들이 자동으로 추가됩니다

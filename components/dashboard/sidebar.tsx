@@ -20,7 +20,8 @@ import {
   Search,
   Tag,
   BarChart3,
-  Clock
+  Clock,
+  Server
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -81,14 +82,21 @@ const navigationItems = [
     href: '/dashboard/settings',
     icon: Settings,
     description: '앱 설정 및 환경설정'
+  },
+  {
+    name: 'MCP 서버',
+    href: '/dashboard/mcp-servers',
+    icon: Server,
+    description: 'MCP 서버 관리 및 설정'
   }
 ];
 
 export default function Sidebar({ userEmail }: SidebarProps) {
   const pathname = usePathname();
   const [currentUrl, setCurrentUrl] = useState('');
+  const [greeting, setGreeting] = useState<string>('');
 
-  // 클라이언트 사이드에서 현재 URL 가져오기
+  // 클라이언트 사이드에서 현재 URL 가져오기 및 인사말 생성
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
@@ -96,9 +104,46 @@ export default function Sidebar({ userEmail }: SidebarProps) {
     }
   }, [pathname]);
 
+  // MCP를 이용한 인사말 생성
+  useEffect(() => {
+    const generateGreeting = async () => {
+      if (!userEmail) return;
+
+      try {
+        // 이메일에서 사용자 이름 추출
+        const userName = userEmail.split('@')[0];
+
+        const response = await fetch('/api/mcp/greeting', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: userName,
+            language: '일본어'
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.greeting) {
+            setGreeting(data.greeting);
+          }
+        }
+      } catch (error) {
+        console.error('인사말 생성 실패:', error);
+        // 기본 인사말 설정
+        const userName = userEmail.split('@')[0];
+        setGreeting(`こんにちは、${userName}さん！`);
+      }
+    };
+
+    generateGreeting();
+  }, [userEmail]);
+
   return (
     <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-full">
-      {/* 사용자 정보 */}
+      {/* 사용자 정보 - 인사말 표시 */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
@@ -106,9 +151,11 @@ export default function Sidebar({ userEmail }: SidebarProps) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">
+              {greeting || '인사말 로딩 중...'}
+            </p>
+            <p className="text-xs text-gray-500 truncate">
               {userEmail}
             </p>
-            <p className="text-xs text-gray-500">온라인</p>
           </div>
         </div>
       </div>

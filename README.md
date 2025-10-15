@@ -1,24 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI 메모장 프로젝트
 
-## Getting Started
+AI 기반 메모장 애플리케이션입니다. MCP (Model Context Protocol)를 통합하여 다양한 AI 기능을 제공합니다.
 
-First, run the development server:
+## 🚀 주요 기능
+
+- **메모장 관리**: 노트 생성, 편집, 검색
+- **AI 통합**: MCP를 통한 AI 도구 지원
+- **QR 코드**: 각 페이지의 공유용 QR 코드
+- **실시간 동기화**: 자동 저장 및 실시간 업데이트
+
+## 🛠️ 기술 스택
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui
+- **Backend**: Supabase (PostgreSQL)
+- **AI**: MCP (Model Context Protocol), Google Gemini
+- **Database**: Drizzle ORM
+
+## 📦 설치 및 실행
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# 의존성 설치
+pnpm install
+
+# 개발 서버 실행
 pnpm dev
-# or
-bun dev
+
+# MCP 서버 실행 (별도 터미널)
+pnpm mcp:greeting
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 애플리케이션을 확인하세요.
 
 ## Learn More
 

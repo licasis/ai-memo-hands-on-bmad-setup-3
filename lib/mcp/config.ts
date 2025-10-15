@@ -7,6 +7,13 @@ import { MCPServerConfig, MCPClientOptions, LoggingLevel } from './types';
 // 기본 MCP 서버 설정
 export const DEFAULT_MCP_SERVERS: MCPServerConfig[] = [
   {
+    id: 'greeting-calculator',
+    name: '인사와 계산기 서버',
+    command: 'node',
+    args: ['lib/mcp/servers/greeting-calculator-server.js'],
+    disabled: false,
+  },
+  {
     id: 'note-enhancer',
     name: 'Note Enhancer',
     command: 'npx',

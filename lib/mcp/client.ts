@@ -80,7 +80,10 @@ export class MCPClient {
       for (const server of serversToConnect) {
         if (!server) continue;
 
-        console.log(`Connecting to MCP server: ${server.name}`);
+        console.log(`Connecting to MCP server: ${server.name}`, {
+          command: server.command,
+          args: server.args
+        });
 
         // Stdio 전송 생성 (대부분의 MCP 서버가 Stdio를 사용)
         const transport = new StdioClientTransport({
@@ -88,6 +91,8 @@ export class MCPClient {
           args: server.args,
           env: { ...process.env, ...server.env },
         });
+
+        console.log('StdioClientTransport created');
 
         // 클라이언트 생성
         const client = new Client(
@@ -100,8 +105,12 @@ export class MCPClient {
           }
         );
 
+        console.log('Client created, attempting to connect...');
+
         // 연결 및 초기화
         await client.connect(transport);
+
+        console.log('Client connected successfully');
 
         // 서버 정보 저장
         this.clients.set(server.id, client);

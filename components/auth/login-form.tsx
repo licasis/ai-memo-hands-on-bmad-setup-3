@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+// import { Alert, AlertDescription } from '@/components/ui/alert'
 import { signInAction } from '@/app/auth/login/actions'
 
 export function LoginForm() {
@@ -19,7 +20,46 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [greeting, setGreeting] = useState('')
+  const [showGreeting, setShowGreeting] = useState(false)
   const router = useRouter()
+
+  // MCP 인사 생성 함수 (API 호출)
+  const generateGreeting = async (userName: string) => {
+    try {
+      const response = await fetch('/api/mcp/greeting', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: userName,
+          language: '일본어'
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.greeting) {
+          setGreeting(data.greeting)
+          setShowGreeting(true)
+
+          // 3초 후 인사 메시지 자동 숨김 및 대시보드 이동
+          setTimeout(() => {
+            setShowGreeting(false)
+            router.push('/dashboard')
+          }, 3000)
+        }
+      } else {
+        // API 실패 시에도 대시보드로 이동
+        router.push('/dashboard')
+      }
+    } catch (error) {
+      console.error('MCP 인사 생성 실패:', error)
+      // MCP 실패 시에도 대시보드로 이동
+      router.push('/dashboard')
+    }
+  }
 
   const validateForm = () => {
     // 이메일 형식 검사
@@ -52,8 +92,9 @@ export function LoginForm() {
       const result = await signInAction({ email, password })
       
       if (result.success) {
-        // 로그인 성공 시 대시보드로 리다이렉트
-        router.push('/dashboard')
+        // 로그인 성공 - MCP 인사 생성 후 대시보드로 이동
+        const userName = email.split('@')[0] // 이메일에서 사용자 이름 추출
+        await generateGreeting(userName)
       } else {
         setError(result.error || '로그인 중 오류가 발생했습니다.')
       }
@@ -104,13 +145,22 @@ export function LoginForm() {
             </div>
           )}
 
-          <Button 
-            type="submit" 
-            className="w-full" 
+          <Button
+            type="submit"
+            className="w-full"
             disabled={isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </Button>
+
+          {/* MCP 인사 메시지 */}
+          {showGreeting && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+              <p className="text-center text-green-800 font-medium">
+                {greeting}
+              </p>
+            </div>
+          )}
 
           <div className="text-center">
             <Link 

@@ -86,10 +86,11 @@ export default function SettingsPage() {
                 <Label htmlFor="session-timeout">세션 타임아웃</Label>
                 <select
                   id="session-timeout"
+                  defaultValue="60"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mt-1"
                 >
                   <option value="30">30분</option>
-                  <option value="60" selected>1시간</option>
+                  <option value="60">1시간</option>
                   <option value="120">2시간</option>
                   <option value="480">8시간</option>
                 </select>
